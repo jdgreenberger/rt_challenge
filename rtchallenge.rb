@@ -34,34 +34,10 @@ helpers do
     @auth.provided? and @auth.basic? and @auth.credentials and @auth.credentials == [ENV['USER'], ENV['USER_PW']]
   end
 
-  def generate_home
-    release_tix_html
-  end
-
-  def release_tix_html
-    colors = { "accepted" => '#9AFE2E',
-               "delivered" => '#819FF7',
-               "finished" =>'#BDBDBD',
-               "started" => '#2E9AFE',
-               "unscheduled" => '#F6CED8',
-               "unstarted" =>'#F5A9A9'}
-    stories = get_release_tickets
-    code = " <h1>Sprint #{ENV['RELEASE_LABEL']}</h1>"
-
-    stories.sort_by { |s| s["current_state"] }.each do |story|
-      owners = ""
-      story["owner_ids"].each do |o|
-        owners += "#{Owner.find_by_poid(o).name} | "
-      end
-      unless owners.empty?
-        owners
-      else
-        owners = '<b>***NO OWNER***</b>'
-      end
-      pts = story['estimate']
-      code += "</br><a href='#{story["url"]}'>#{story["name"]}</a> - #{owners} - <b style='background-color:#{colors[story["current_state"]]};'>#{story["current_state"]}</b> #{'- ' + pts.to_s if pts}</br>"
-    end
-    code
+  def get_story_owners(ids)
+    ids.map do |id|
+      Owner.find_by_poid(id).name
+    end.join(' | ') or 'NO OWNER'
   end
 
   def make_call_parsed(url, headers)
@@ -83,7 +59,7 @@ helpers do
         stories << response["stories"]
       end
     end
-    @stories = stories.flatten
+    @stories = stories.flatten.sort_by { |s| s["current_state"] }
   end
 
   def update_users

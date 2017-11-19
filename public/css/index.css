@@ -1,0 +1,40 @@
+body {
+	background: #f8f8f8;
+	font: ;
+}
+
+.projects {
+	padding-top: 30px;
+	padding-left: 20px;
+}
+
+.project {
+	display: inline-block;
+	width: 280px;
+	height: 224px;
+	background: #fff;
+	border: solid 1px #d6dee3;
+}
+
+.name {
+	padding-bottom: 10px
+}
+
+.accepted {
+	color: #9AFE2E;
+}
+.delivered {
+	color: #819FF7;
+}
+.finished {
+	color: #BDBDBD;
+}
+.started {
+	color: #2E9AFE;
+}
+.unscheduled {
+	color: #F6CED8;
+}
+.unstarted {
+	color: #F5A9A9;
+}

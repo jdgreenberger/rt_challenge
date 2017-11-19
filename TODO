@@ -1,7 +1,7 @@
 TODO
 
+use header release label " <h1>Sprint #{ENV['RELEASE_LABEL']}</h1>"
 add seeder for owners
-improve UI
 figure out labels
 think of new feature
 
@@ -10,4 +10,7 @@ DID
 
 
 Introduce HAML
-Refactor html generation from ruby to haml
+Refactoring
+	- html generation from ruby to haml
+	- color logic to use css
+	- methods to be more modular

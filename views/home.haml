@@ -6,7 +6,10 @@
 	%body
 		%a{href: "http://#{request.host_with_port + '/update_sprint'}"} Update
 		- if get_release_tickets
-			- @stories.each do |story|
-				.project
-					%p
-						- story
+			%div.projects
+				- @stories.each do |story|
+					.project
+						%a{href: "#{story["url"]}"}= story["name"]
+						%p.owners= get_story_owners(story["owner_ids"])
+						%p{class: "#{story["current_state"]}"}= story["current_state"]
+						%p.estimate= story["estimate"]
