@@ -1,0 +1,12 @@
+!!!
+%html
+	%head
+		%title Sinatra App
+		%link{:rel => 'stylesheet', :type => 'text/css', :href => '/css/index.css'}
+	%body
+		%a{href: "http://#{request.host_with_port + '/update_sprint'}"} Update
+		- if get_release_tickets
+			- @stories.each do |story|
+				.project
+					%p
+						- story

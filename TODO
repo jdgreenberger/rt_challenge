@@ -1,0 +1,13 @@
+TODO
+
+add seeder for owners
+improve UI
+figure out labels
+think of new feature
+
+
+DID
+
+
+Introduce HAML
+Refactor html generation from ruby to haml
