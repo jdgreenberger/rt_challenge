@@ -1,40 +1,68 @@
 body {
-	background: #f8f8f8;
-	font: ;
+  background: #f8f8f8;
 }
-
+a {
+  text-decoration: none;
+  color: #000;
+}
+.update {
+  width: 150px;
+  border: solid 1px #d6dee3;
+  border-radius: 5px;
+  text-align: center;
+  text-transform: uppercase;
+  font-size: 12px;
+  height: 20px;
+  padding-top: 5px;
+}
+.update:hover {
+  background: #999;
+  cursor: pointer;
+}
 .projects {
-	padding-top: 30px;
-	padding-left: 20px;
+  padding-top: 30px;
+  padding-left: 20px;
 }
-
-.project {
-	display: inline-block;
-	width: 280px;
-	height: 224px;
-	background: #fff;
-	border: solid 1px #d6dee3;
+.projects .project {
+  padding-top: 20px;
+  display: inline-block;
+  width: 280px;
+  height: 224px;
+  background: #fff;
+  border: solid 1px #d6dee3;
 }
-
-.name {
-	padding-bottom: 10px
+.projects .project .name {
+  float: left;
+  width: 50%;
 }
-
-.accepted {
-	color: #9AFE2E;
+.projects .project .state {
+  float: right;
+  border-radius: 10px;
+  width: 100px;
+  text-align: center;
+  color: #fff;
 }
-.delivered {
-	color: #819FF7;
+.projects .project p {
+  margin-top: 0px;
 }
-.finished {
-	color: #BDBDBD;
+.projects .project .name {
+  padding-bottom: 10px;
 }
-.started {
-	color: #2E9AFE;
+.projects .project .accepted {
+  background: #9afe2e;
 }
-.unscheduled {
-	color: #F6CED8;
+.projects .project .delivered {
+  background: #f53;
 }
-.unstarted {
-	color: #F5A9A9;
+.projects .project .finished {
+  background: #bdbdbd;
+}
+.projects .project .started {
+  background: #2e9afe;
+}
+.projects .project .unscheduled {
+  background: #5462ff;
+}
+.projects .project .unstarted {
+  background: #f5a9a9;
 }

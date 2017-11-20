@@ -1,16 +1,26 @@
 TODO
 
-use header release label " <h1>Sprint #{ENV['RELEASE_LABEL']}</h1>"
+fix last UI
+compile stylus
 add seeder for owners
-figure out labels
-think of new feature
+figure out update
+filter dropdown
 
 
 DID
 
 
 Introduce HAML
+Introduce Stylus/CSS
+Improve UI
 Refactoring
 	- html generation from ruby to haml
+	- * stylus
 	- color logic to use css
-	- methods to be more modular
+	- make methods more modular, DRY
+	- make code more functional, reduce lines
+	- extract pivotal API to a dedicated module
+	- * fix env references
+
+
+* = do more

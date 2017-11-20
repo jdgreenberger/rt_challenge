@@ -1,15 +1,21 @@
 !!!
 %html
 	%head
-		%title Sinatra App
+		%title ReviewTrackers Challenge
 		%link{:rel => 'stylesheet', :type => 'text/css', :href => '/css/index.css'}
 	%body
-		%a{href: "http://#{request.host_with_port + '/update_sprint'}"} Update
+		%div.update
+			%a{href: "http://#{request.host_with_port + '/update_sprint'}"} Update
+		%select
+			- ['Accepted', 'Delivered', 'Finished', 'Started', 'Unscheduled', 'Unstarted'].each do |state|
+				%option{:value => state}= state
 		- if get_release_tickets
+			%h1= "Sprint #{@release_label}"
 			%div.projects
 				- @stories.each do |story|
 					.project
-						%a{href: "#{story["url"]}"}= story["name"]
-						%p.owners= get_story_owners(story["owner_ids"])
-						%p{class: "#{story["current_state"]}"}= story["current_state"]
+						%div.name
+							%a{href: "#{story["url"]}"}= story["name"]
+						%span.state{class: "#{story["current_state"]}"}= story["current_state"]
 						%p.estimate= story["estimate"]
+						%p.owners= get_story_owners(story["owner_ids"])

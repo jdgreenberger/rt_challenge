@@ -9,9 +9,12 @@ require 'sinatra/activerecord'
 require './config/environments'
 require './models/owner'
 require 'haml'
+require 'stylus'
+require './lib/pivotal_api'
 
 get '/' do
   protected!
+  Stylus.compile(File.new('public/css/index.styl'))
   haml :home
 end
 
@@ -22,6 +25,11 @@ get '/update_sprint' do
 end
 
 helpers do
+  def pivotal_api
+    @release_label = ENV['RELEASE_LABEL'] || '2.2017.1'
+    @pivotal_api ||= PivotalApi.new(ENV['PT_TOKEN'], @release_label)
+    @pivotal_api
+  end
 
   def protected!
     return if authorized?
@@ -45,21 +53,14 @@ helpers do
     JSON.parse(response)
   end
 
-  def get_release_label
-    label = ENV['RELEASE_LABEL'] || '2.2017.1'
-    {"project_ids" => ENV['PT_PROJECTS'].split(", "), "name" => label }
+  def get_project_ids
+    ENV['PT_PROJECTS'].split(", ")
   end
 
   def get_release_tickets
-    stories = []
-    label = get_release_label
-    label["project_ids"].each do |id|
-      response = make_call_parsed("#{pivotal_url}/projects/#{id}/search?query=label%3A#{label["name"]}+AND+includedone%3Atrue", pivotal_headers)["stories"]
-      if response
-        stories << response["stories"]
-      end
-    end
-    @stories = stories.flatten.sort_by { |s| s["current_state"] }
+    @stories = get_project_ids
+      .map {|id| pivotal_api.get_project_stories(id) }
+      .flatten.sort_by { |s| s["current_state"] }
   end
 
   def update_users
@@ -75,10 +76,6 @@ helpers do
     end
   end
 
-  def pivotal_headers
-    { 'X-TrackerToken' => ENV['PT_TOKEN'] }
-  end
-
   def update_current_iteration
     update_users
     headers = pivotal_headers
@@ -88,12 +85,13 @@ helpers do
       response = make_call_parsed(url, headers)
       stories = response.last["stories"]
       stories.each do |story|
-        add_label(project, story, ENV['RELEASE_LABEL'])
+        add_label(project, story, @release_label)
       end
     end
   end
 
   def add_label(project, story, label)
+    p project, story, label
     return if label_present?(project, story, label)
     headers = pivotal_headers
     url = "#{pivotal_url}/projects/#{project}/stories/#{story["id"]}/labels"
@@ -111,9 +109,5 @@ helpers do
       end
     end
     false
-  end
-
-  def pivotal_url
-    "https://www.pivotaltracker.com/services/v5"
   end
 end
