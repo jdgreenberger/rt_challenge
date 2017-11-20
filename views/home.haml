@@ -4,8 +4,7 @@
 		%title ReviewTrackers Challenge
 		%link{:rel => 'stylesheet', :type => 'text/css', :href => '/css/index.css'}
 	%body
-		%div.update
-			%a{href: "http://#{request.host_with_port + '/update_sprint'}"} Update
+		%a.update{href: "http://#{request.host_with_port + '/update_sprint'}"} Update
 		%select
 			- ['Accepted', 'Delivered', 'Finished', 'Started', 'Unscheduled', 'Unstarted'].each do |state|
 				%option{:value => state}= state

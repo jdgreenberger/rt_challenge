@@ -3,7 +3,6 @@ TODO
 fix last UI
 compile stylus
 add seeder for owners
-figure out update
 filter dropdown
 
 
@@ -18,7 +17,8 @@ Refactoring
 	- * stylus
 	- color logic to use css
 	- make methods more modular, DRY
-	- make code more functional, reduce lines
+	- make code more functional (using more enumrable methods), reduce lines
+	- make naming more consistent
 	- extract pivotal API to a dedicated module
 	- * fix env references
 

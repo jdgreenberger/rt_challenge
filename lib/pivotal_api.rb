@@ -15,12 +15,35 @@ class PivotalApi
     JSON.parse(response)
   end
 
+  def post(url, body, headers)
+    RestClient.post url, body, headers
+  end
+
   def get_project_stories(project_id)
-    response = self.fetch_and_parse(
+    response = fetch_and_parse(
       "#{pivotal_url}/projects/#{project_id}/search?query=label%3A#{@label}+AND+includedone%3Atrue",
       pivotal_headers
     )["stories"]
     response ? response["stories"] : nil
+  end
+
+  def get_project_owners(project_id)
+    fetch_and_parse("#{pivotal_url}/projects/#{project_id}/memberships", pivotal_headers)
+  end
+
+  def get_current_stories(project_id)
+    response = fetch_and_parse("#{pivotal_url}/projects/#{project_id}/iterations?scope=current", pivotal_headers)
+    response.last["stories"]
+  end
+
+  def add_label_to_project(project_id, story)
+    return if label_present?(project_id, story)
+    post("#{pivotal_url}/projects/#{project_id}/stories/#{story["id"]}/labels", {name: @label}, pivotal_headers)
+  end
+
+  def label_present?(project_id, story)
+    labels = fetch_and_parse("#{pivotal_url}/projects/#{project_id}/stories/#{story["id"]}/labels", pivotal_headers)
+    not labels.none? {|l| l["name"] == @label}
   end
 
   def pivotal_headers
@@ -29,55 +52,5 @@ class PivotalApi
 
   def pivotal_url
     "https://www.pivotaltracker.com/services/v5"
-  end
-
-  def update_users
-    ENV['PT_PROJECTS'].split(", ").each do |id|
-      ownersDatum = fetch_and_parse("#{pivotal_url}/projects/#{id}/memberships", pivotal_headers)
-      ownersDatum.each do |ownerData|
-        unless Owner.find_by_poid(ownerData["person"]["id"])
-          Owner.create( poid: ownerData["person"]["id"],
-                        initials: ownerData["person"]["initials"],
-                        name: ownerData["person"]["name"])
-        end
-      end
-    end
-  end
-
-
-
-  def update_current_iteration
-    update_users
-    headers = pivotal_headers
-    projects = ENV['PT_PROJECTS'].split(", ")
-    projects.each do |project|
-      url = "#{pivotal_url}/projects/#{project}/iterations?scope=current"
-      response = fetch_and_parse(url, headers)
-      stories = response.last["stories"]
-      stories.each do |story|
-        add_label(project, story, get_release_label)
-      end
-    end
-  end
-
-  def add_label(project, story, label)
-    p project, story, label
-    return if label_present?(project, story, label)
-    headers = pivotal_headers
-    url = "#{pivotal_url}/projects/#{project}/stories/#{story["id"]}/labels"
-    body = {name: label}
-    RestClient.post url, body, headers
-  end
-
-  def label_present?(project, story, label)
-    headers = pivotal_headers
-    url = "#{pivotal_url}/projects/#{project}/stories/#{story["id"]}/labels"
-    labels = fetch_and_parse(url, headers)
-    labels.each do |l|
-      if l["name"] == label
-        return true
-      end
-    end
-    false
   end
 end

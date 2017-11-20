@@ -20,7 +20,8 @@ end
 
 get '/update_sprint' do
   protected!
-  update_current_iteration
+  update_users
+  update_project_labels
   redirect to('/')
 end
 
@@ -48,11 +49,6 @@ helpers do
     end.join(' | ') or 'NO OWNER'
   end
 
-  def make_call_parsed(url, headers)
-    response = RestClient.get url, headers
-    JSON.parse(response)
-  end
-
   def get_project_ids
     ENV['PT_PROJECTS'].split(", ")
   end
@@ -64,8 +60,8 @@ helpers do
   end
 
   def update_users
-    ENV['PT_PROJECTS'].split(", ").each do |id|
-      ownersDatum = make_call_parsed("#{pivotal_url}/projects/#{id}/memberships", pivotal_headers)
+    get_project_ids.each do |id|
+      ownersDatum = pivotal_api.get_project_owners(id)
       ownersDatum.each do |ownerData|
         unless Owner.find_by_poid(ownerData["person"]["id"])
           Owner.create( poid: ownerData["person"]["id"],
@@ -76,38 +72,11 @@ helpers do
     end
   end
 
-  def update_current_iteration
-    update_users
-    headers = pivotal_headers
-    projects = ENV['PT_PROJECTS'].split(", ")
-    projects.each do |project|
-      url = "#{pivotal_url}/projects/#{project}/iterations?scope=current"
-      response = make_call_parsed(url, headers)
-      stories = response.last["stories"]
-      stories.each do |story|
-        add_label(project, story, @release_label)
+  def update_project_labels
+    get_project_ids.each do |id|
+      pivotal_api.get_project_stories(id).each do |story|
+        pivotal_api.add_label_to_project(id, story)
       end
     end
-  end
-
-  def add_label(project, story, label)
-    p project, story, label
-    return if label_present?(project, story, label)
-    headers = pivotal_headers
-    url = "#{pivotal_url}/projects/#{project}/stories/#{story["id"]}/labels"
-    body = {name: label}
-    RestClient.post url, body, headers
-  end
-
-  def label_present?(project, story, label)
-    headers = pivotal_headers
-    url = "#{pivotal_url}/projects/#{project}/stories/#{story["id"]}/labels"
-    labels = make_call_parsed(url, headers)
-    labels.each do |l|
-      if l["name"] == label
-        return true
-      end
-    end
-    false
   end
 end
