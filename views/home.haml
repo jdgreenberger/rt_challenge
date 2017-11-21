@@ -5,9 +5,9 @@
 		%link{:rel => 'stylesheet', :type => 'text/css', :href => '/css/index.css'}
 	%body
 		%a.update{href: "http://#{request.host_with_port + '/update_sprint'}"} Update
-		%select
-			- ['Accepted', 'Delivered', 'Finished', 'Started', 'Unscheduled', 'Unstarted'].each do |state|
-				%option{:value => state}= state
+		%select{onchange: 'window.location.href = window.origin + "/filter/" + this.value'}
+			- [get_filter_val_from_params(params) ? 'None' : 'Filter By State'].concat(valid_states).each do |state|
+				%option{:value => state, :selected => get_filter_val_from_params(params) == state.downcase}= state
 		- if get_release_tickets
 			%h1= "Sprint #{@release_label}"
 			%div.projects

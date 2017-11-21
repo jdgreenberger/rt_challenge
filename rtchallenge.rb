@@ -21,6 +21,10 @@ get '/' do
   haml :home
 end
 
+get '/filter/*' do
+  haml :home
+end
+
 get '/update_sprint' do
   protected!
   update_users
@@ -29,9 +33,12 @@ get '/update_sprint' do
 end
 
 helpers do
+  def valid_states
+    ['Accepted', 'Delivered', 'Finished', 'Started', 'Unscheduled', 'Unstarted']
+  end
+
   def pivotal_api
-    @release_label = ENV['RELEASE_LABEL'] || '2.2017.1'
-    @pivotal_api ||= PivotalApi.new(ENV['PT_TOKEN'], @release_label)
+    @pivotal_api ||= PivotalApi.new(ENV['PT_TOKEN'], ENV['RELEASE_LABEL'] || '2.2017.1')
     @pivotal_api
   end
 
@@ -46,6 +53,11 @@ helpers do
     @auth.provided? and @auth.basic? and @auth.credentials and @auth.credentials == [ENV['USER'], ENV['USER_PW']]
   end
 
+  def get_filter_val_from_params(params)
+    return nil if not params["splat"] or params["splat"].empty? or not valid_states.include? params["splat"].first
+    params["splat"].first.downcase
+  end
+
   def get_story_owners(ids)
     owners = ids.map do |id|
       Owner.find_by_poid(id).name
@@ -58,9 +70,16 @@ helpers do
   end
 
   def get_release_tickets
-    @stories = get_project_ids
-      .map {|id| pivotal_api.get_project_stories(id) }
-      .flatten.sort_by { |s| s["current_state"] }
+    filter_val = get_filter_val_from_params(params)
+    p filter_val
+    stories = get_project_ids.map {|id| pivotal_api.get_project_stories(id) }.flatten
+    if filter_val
+      @stories = stories.select do |s|
+        s["current_state"].downcase == filter_val
+      end
+    else
+      @stories = stories.sort_by { |s| s["current_state"] }
+    end
   end
 
   def update_users
