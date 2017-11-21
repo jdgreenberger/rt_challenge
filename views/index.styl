@@ -1,0 +1,79 @@
+body
+	background: #f8f8f8
+
+a
+	text-decoration: none
+	color: black
+
+.update
+	padding: 3px 10px
+	border: solid 1px #d6dee3
+	border-radius: 5px
+	text-align: center
+	text-transform: uppercase
+	font-size: 12px
+
+	&:hover
+		background: #cccccc
+		cursor: pointer
+
+.projects
+	padding-top: 30px
+	padding-left: 20px
+
+	.project
+		float: left
+		padding: 10px 10px
+		margin-left: 20px
+		margin-top: 20px
+		width: 250px
+		height: 200px
+		background: #fff
+		border: solid 1px #d6dee3
+
+		.top
+			height: 50%
+
+			a
+				float: left
+				width: 140px
+
+			.state
+				float: right
+				border-radius: 10px
+				width: 100px
+				text-align: center
+				color: white
+
+			.accepted
+				background: #9AFE2E
+
+			.delivered
+				background: #ff5533
+
+			.finished
+				background: #BDBDBD
+
+			.started
+				background: #2E9AFE
+
+			.unscheduled
+				background: #5462ff
+
+			.unstarted
+				background: #F5A9A9
+
+		.bottom
+
+			p
+				margin-top: 0px
+				font-weight: bold
+
+				span
+					font-weight: normal
+
+			.owners
+				float: right
+
+			.estimate
+				float: left

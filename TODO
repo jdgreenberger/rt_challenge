@@ -1,17 +1,14 @@
 TODO
 
-fix last UI
-compile stylus
-add seeder for owners
 filter dropdown
-
+fix env references
 
 DID
 
 
 Introduce HAML
 Introduce Stylus/CSS
-Improve UI
+Improve UI, organizing projects into cards
 Refactoring
 	- html generation from ruby to haml
 	- * stylus
@@ -20,7 +17,7 @@ Refactoring
 	- make code more functional (using more enumrable methods), reduce lines
 	- make naming more consistent
 	- extract pivotal API to a dedicated module
-	- * fix env references
+
 
 
 * = do more

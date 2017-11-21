@@ -8,13 +8,16 @@ require 'rb-readline'
 require 'sinatra/activerecord'
 require './config/environments'
 require './models/owner'
+require './lib/pivotal_api'
 require 'haml'
 require 'stylus'
-require './lib/pivotal_api'
+require 'stylus/tilt'
+
+get '/css/*' do
+  stylus :index
+end
 
 get '/' do
-  protected!
-  Stylus.compile(File.new('public/css/index.styl'))
   haml :home
 end
 
@@ -44,9 +47,10 @@ helpers do
   end
 
   def get_story_owners(ids)
-    ids.map do |id|
+    owners = ids.map do |id|
       Owner.find_by_poid(id).name
-    end.join(' | ') or 'NO OWNER'
+    end.join(' and ')
+    owners == '' ? 'No Owner' : owners
   end
 
   def get_project_ids

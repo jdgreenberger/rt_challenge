@@ -13,8 +13,13 @@
 			%div.projects
 				- @stories.each do |story|
 					.project
-						%div.name
+						%div.top
 							%a{href: "#{story["url"]}"}= story["name"]
-						%span.state{class: "#{story["current_state"]}"}= story["current_state"]
-						%p.estimate= story["estimate"]
-						%p.owners= get_story_owners(story["owner_ids"])
+							%span.state{class: "#{story["current_state"]}"}= story["current_state"]
+						%div.bottom
+							%p.owners
+								Owners:
+								%span= get_story_owners(story["owner_ids"])
+							%p.estimate
+								Points:
+								%span= story["estimate"]
