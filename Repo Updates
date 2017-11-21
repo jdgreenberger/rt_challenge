@@ -1,0 +1,14 @@
+Use dotenv for env loading
+Introduce HAML
+Introduce Stylus/CSS
+Improve UI, organizing projects into cards
+Add fuctionality: filter project by state
+Refactoring
+	- html generation from ruby to haml
+	- state color logic from ruby to css
+	- make methods more modular, DRY
+	- make code more functional (using more enumrable methods), reduce total lines
+	- make variable naming more consistent
+	- extract pivotal API to a dedicated module
+
+
